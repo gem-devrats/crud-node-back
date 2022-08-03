@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken'
 import { sendMails } from "../email/emailController";
 import exeljs from 'exceljs'
 import path from 'path'
+import fs from 'fs'
 
 var id: string;
 const readToken = (token: string) => {
@@ -112,9 +113,12 @@ export const sheet = async (req: Request, res: Response)=>{
         });
         const data = await workbook.xlsx.writeFile('contacts.xlsx')
         const filepath = path.join(__dirname,'../contacts.xlsx');
-        console.log(filepath);
-        res.status(200).sendFile(filepath);
+        let buff = fs.readFileSync(filepath);
+        let base64data = buff.toString('base64');
+        //console.log(base64data);
+        res.status(200).send(base64data);
     } catch(error){
+        console.log(error)
         res.status(400).send(error)
     }
 } 
